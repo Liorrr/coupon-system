@@ -1,17 +1,19 @@
 package com.lior.model;
 
 import com.lior.model.enums.Category;
+import lombok.NoArgsConstructor;
 
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.Objects;
 
 
+@NoArgsConstructor
 /**
  * Coupon Java Bean - should include: id, companyID, amount, Category, title, description, price, startDate, endDate image.
  */
 public class Coupon {
-    private final int id;
+    private int id;
     private int companyID;
     private Category category;
     private String title;

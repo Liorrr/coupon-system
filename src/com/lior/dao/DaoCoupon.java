@@ -103,7 +103,12 @@ public class DaoCoupon {
 
     //-----------------------------------------
 
-    public Coupon getCoupon (long c)
+    public Coupon getCoupon (long couponId) throws Exception {
+        Coupon coupon = new Coupon();
+        
+
+        return coupon;
+    }
 
 }
 
