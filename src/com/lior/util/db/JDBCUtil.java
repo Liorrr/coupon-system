@@ -1,4 +1,4 @@
-package com.lior.util;
+package com.lior.util.db;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

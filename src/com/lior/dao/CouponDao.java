@@ -1,11 +1,11 @@
 package com.lior.dao;
 
 import com.lior.model.Coupon;
-import com.lior.util.JDBCUtil;
+import com.lior.util.db.JDBCUtil;
 
 import java.sql.*;
 
-public class DaoCoupon {
+public class CouponDao {
     public long createCoupon(Coupon coupon) throws Exception {
         PreparedStatement preparedStatement = null;
         Connection connection = null;
@@ -45,8 +45,7 @@ public class DaoCoupon {
         }
     }
 
-    //-----------------------------------------
-
+    //update coupon by couponId
     public void updateCoupon(Coupon coupon) {
         PreparedStatement preparedStatement = null;
         Connection connection = null;
@@ -78,8 +77,7 @@ public class DaoCoupon {
         }
     }
 
-    //-----------------------------------------
-
+    //delete coupon by couponId
     public void deleteCoupon(Coupon coupon) {
         PreparedStatement preparedStatement = null;
         Connection connection = null;
@@ -101,8 +99,7 @@ public class DaoCoupon {
         }
     }
 
-    //-----------------------------------------
-
+    //Get coupon by couponId
     public Coupon getCoupon (long couponId) throws Exception {
         Coupon coupon = new Coupon();
         

@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 
 import java.sql.Date;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Objects;
 
 
@@ -13,7 +14,7 @@ import java.util.Objects;
  * Coupon Java Bean - should include: id, companyID, amount, Category, title, description, price, startDate, endDate image.
  */
 public class Coupon {
-    private int id;
+    private Long id;
     private int companyID;
     private Category category;
     private String title;
@@ -126,6 +127,14 @@ public class Coupon {
         return Date.valueOf(startDate);
     }
 
+    public void setDateEndDate(Date endDate) {
+        this.endDate = endDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+    }
+
+    public void setDateStartDate(Date startDate) {
+        this.startDate = startDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+    }
+
     public void setStartDate(LocalDate startDate) {
         this.startDate = startDate;
     }
@@ -152,6 +161,9 @@ public class Coupon {
 
     public int getCategoryID() {
         return Category.valueOf(String.valueOf(category)).ordinal();
+    }
+
+    public void setId(int id) { this.id = id;
     }
 }
 
