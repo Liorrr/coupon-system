@@ -13,5 +13,5 @@ public abstract class UserDAO<ID, Entity> implements CrudDAO<ID, Entity> {
         return readByEmail(email) != null;
     }
 
-    public abstract Company read(Long id) throws Exception, EmptyResultSetException;
+    public abstract Entity read(Long id) throws Exception, EmptyResultSetException;
 }

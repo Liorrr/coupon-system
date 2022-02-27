@@ -41,16 +41,7 @@ public class CompanyDAO extends UserDAO<Long, Company> {
 
     @Override
     public boolean isExists(String email) throws CrudException {
-        Connection connection = null;
-        try {
-            connection = connectionPool.getConnection();
-        } catch (Exception e) { throw new RuntimeException("failed to get connection to db"); }
-        try {
             return super.isExists(email);
-        } finally {
-            connectionPool.returnConnection(connection);
-        }
-
     }
 
     @Override
@@ -122,8 +113,8 @@ public class CompanyDAO extends UserDAO<Long, Company> {
             final PreparedStatement preparedStatement = connectionPool.getConnection().prepareStatement(sqlStatement);
             final ResultSet resultSet = preparedStatement.executeQuery();
 
-            if (!resultSet.next()) {
-                return null;
+            while (resultSet.next()) {
+                companies.add(DBtoObject.companyFromResultSet(resultSet));
             }
         } catch (SQLException | InterruptedException e) {
             e.printStackTrace();
@@ -146,7 +137,7 @@ public class CompanyDAO extends UserDAO<Long, Company> {
             final String sqlStatement = "DELETE FROM coupon_system.coupons WHERE ID = ?";
             final PreparedStatement preparedStatement = connectionPool.getConnection().prepareStatement(sqlStatement);
             preparedStatement.setLong(1, id);
-            final ResultSet resultSet = preparedStatement.executeQuery();
+            preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
@@ -170,7 +161,7 @@ public class CompanyDAO extends UserDAO<Long, Company> {
             preparedStatement.setString(2, company.getEmail());
             preparedStatement.setInt(3, company.getPassword());
             preparedStatement.setLong(4, company.getId());
-            final ResultSet resultSet = preparedStatement.executeQuery();
+            preparedStatement.executeUpdate();
 
         } catch (SQLException e) {
             e.printStackTrace();
