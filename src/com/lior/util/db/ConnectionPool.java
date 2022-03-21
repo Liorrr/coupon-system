@@ -1,14 +1,13 @@
 package com.lior.util.db;
 
-import com.lior.util.db.DbConfig;
-import com.lior.util.logging.Logger;
-
+import com.lior.util.conf.DBconf;
+import com.lior.util.Logger;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.Stack;
-import java.util.logging.Logger;
+
 
 public class ConnectionPool {
     //public static final String SQL_URL = "";
@@ -38,7 +37,7 @@ public class ConnectionPool {
 
     private void openAllConnections() throws SQLException {
         for (int counter = 0; counter < NUMBER_OF_CONNECTIONS; counter++) {
-            final Connection connection = DriverManager.getConnection(DbConfig.sqlUrl, DbConfig.sqlUser, DbConfig.sqlPassword);
+            final Connection connection = DriverManager.getConnection(DBconf.sqlUrl, DBconf.sqlUser, DBconf.sqlPass);
             connections.push(connection);
         }
     }

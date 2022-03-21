@@ -51,12 +51,12 @@ CREATE TABLE `coupon_system`.`coupons` (
     ON UPDATE NO ACTION);
 
 CREATE TABLE `coupon_system`.`customers_vs_coupons` (
-  `costumer_id` INT NOT NULL,
+  `customer_id` INT NOT NULL,
   `coupon_id` INT NOT NULL,
-  INDEX `customer_id_idx` (`costumer_id` ASC) VISIBLE,
+  INDEX `customer_id_idx` (`customer_id` ASC) VISIBLE,
   INDEX `coupon_id_idx` (`coupon_id` ASC) VISIBLE,
   CONSTRAINT `customer_id`
-    FOREIGN KEY (`costumer_id`)
+    FOREIGN KEY (`customer_id`)
     REFERENCES `coupon_system`.`customers` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,

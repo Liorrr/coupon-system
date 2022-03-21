@@ -8,7 +8,6 @@ import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
 public class Customer {
     private Long id;
     private String firstName;
@@ -17,13 +16,11 @@ public class Customer {
     private int password;
     private List<Coupon> coupons = new ArrayList<Coupon>();
 
-    public Customer(Long id, String firstName, String lastName, String email, String password, List<Coupon> coupons) {
-        this.id = id;
+    public Customer(String firstName, String lastName, String email, String password) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.password = password.hashCode();
-        this.coupons = coupons;
     }
 
     @Override
@@ -90,6 +87,5 @@ public class Customer {
         this.coupons = coupons;
     }
 
-    public void setId(long customer_id) {
-    }
+
 }

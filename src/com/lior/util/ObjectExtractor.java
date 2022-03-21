@@ -7,27 +7,22 @@ import com.lior.model.enums.Category;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class DBtoObject {
+public class ObjectExtractor {
 
     //Create a Company object out of database result set
     public static Company companyFromResultSet(ResultSet result) throws SQLException {
-
         Company company = new Company();
-
         company.setId(result.getLong("id"));
         company.setName(result.getString("name"));
         company.setPassword(result.getInt("password"));
         company.setEmail(result.getString("email"));
-
         return company;
     }
 
     //Create a coupon object out of database result set
-    public static Coupon extractCouponFromResultSet(ResultSet result) throws SQLException {
-
+    public static Coupon couponFromResultSet(ResultSet result) throws SQLException {
         Coupon coupon = new Coupon();
-
-        coupon.setId(result.getInt("coupon_id"));
+        coupon.setId(result.getLong("coupon_id"));
         coupon.setTitle(result.getString("title"));
         coupon.setCompanyID(result.getInt("company_id"));
         coupon.setDateStartDate(result.getDate("start_date"));
@@ -36,24 +31,20 @@ public class DBtoObject {
         coupon.setDescription(result.getString("description"));
         coupon.setPrice(result.getFloat("price"));
         coupon.setImage(result.getString("image"));
-
         // Translating the enum into a string in order to catch it
         Category category = Category.valueOf(result.getString("category_id"));
         coupon.setCategory(category);
-
         return coupon;
     }
+
     //Create a coupon object out of database result set
     public static Customer customerFromResultSet(ResultSet result) throws SQLException {
-
         Customer customer = new Customer();
-
         customer.setId(result.getLong("customer_id"));
         customer.setFirstName(result.getString("first_name"));
         customer.setLastName(result.getString("last_name"));
         customer.setEmail(result.getString("email"));
         customer.setPassword(result.getInt("password"));
-
         return customer;
     }
 

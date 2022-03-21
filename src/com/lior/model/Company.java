@@ -16,14 +16,13 @@ public class Company {
     private String name;
     private String email;
     private int password;
-    private List<Coupon> coupons = new ArrayList<Coupon>();
+    private ArrayList<Coupon> coupons = new ArrayList<Coupon>();
 
-    public Company(Long id, String name, String email, String password, List<Coupon> coupons) {
-        this.id = id;
+    public Company(String name, String email, String password) {
         this.name = name;
         this.email = email;
         this.password = password.hashCode();
-        this.coupons = coupons;
+
     }
 
     @Override
@@ -69,15 +68,13 @@ public class Company {
         this.password = password.hashCode();
     }
 
-    public void setPassword(int password) {
-        this.password = password;
-    }
+    public void setPassword(int password) { this.password = password; }
 
-    public List<Coupon> getCoupons() {
+    public ArrayList<Coupon> getCoupons() {
         return coupons;
     }
 
-    public void setCoupons(List<Coupon> coupons) {
+    public void setCoupons(ArrayList<Coupon> coupons) {
         this.coupons = coupons;
     }
 }

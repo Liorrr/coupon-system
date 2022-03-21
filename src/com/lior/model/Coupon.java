@@ -2,13 +2,14 @@ package com.lior.model;
 
 import com.lior.model.enums.Category;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 import java.sql.Date;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Objects;
 
-
+@RequiredArgsConstructor
 @NoArgsConstructor
 /**
  * Coupon Java Bean - should include: id, companyID, amount, Category, title, description, price, startDate, endDate image.
@@ -25,7 +26,7 @@ public class Coupon {
     private LocalDate endDate ;
     private String image;
 
-    public Coupon(int id, int companyID, Category category, String title, String description, int amount, double price, LocalDate startDate, LocalDate endDate, String image) {
+    public Coupon(Long id, int companyID, Category category, String title, String description, int amount, double price, LocalDate startDate, LocalDate endDate, String image) {
         this.id = id;
         this.companyID = companyID;
         this.category = category;
@@ -67,7 +68,7 @@ public class Coupon {
         return Objects.hash(id, companyID, category, title, description, amount, price, startDate, endDate, image);
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
@@ -163,8 +164,8 @@ public class Coupon {
         return Category.valueOf(String.valueOf(category)).ordinal();
     }
 
-    public void setId(int id) { this.id = id;
-    }
+    public void setId(Long id) { this.id = id; }
+
 }
 
 
