@@ -21,7 +21,7 @@ public class CustomerDoa extends UserDAO<Long, Customer> {
     public Long create(Customer customer) throws CrudException, SQLException {
         Connection connection = null;
         try {
-            connection = connectionPool.getConnection();
+            connection = connectionPool.getInstance().getConnection();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -39,21 +39,21 @@ public class CustomerDoa extends UserDAO<Long, Customer> {
             }
             return resultSet.getLong(1);
         } finally {
-            connectionPool.returnConnection(connection);
+            connectionPool.getInstance().returnConnection(connection);
         }
     }
 
     @Override
-    public ArrayList<Customer> readAll() throws CrudException {
+    public ArrayList<Customer> readAll() throws CrudException, SQLException {
         Connection connection = null;
-        final ArrayList<Customer> customers = null;
+        final ArrayList<Customer> customers = new ArrayList<Customer>();
         try {
-            connection = connectionPool.getConnection();
-        } catch (InterruptedException e) {
+            connection = connectionPool.getInstance().getConnection();
+        } catch (InterruptedException | SQLException e) {
             e.printStackTrace();
         }
         try {
-            final String sqlStatement = "SELECT * FROM coupon_system.coupons";
+            final String sqlStatement = "SELECT * FROM coupon_system.customers";
             final PreparedStatement preparedStatement = connection.prepareStatement(sqlStatement);
             final ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -66,16 +66,16 @@ public class CustomerDoa extends UserDAO<Long, Customer> {
         try {
             return customers;
         } finally {
-            connectionPool.returnConnection(connection);
+            connectionPool.getInstance().returnConnection(connection);
         }
     }
 
     @Override
-    public void delete(Long id) throws CrudException {
+    public void delete(Long id) throws CrudException, SQLException {
         Connection connection = null;
         try {
-            connection = connectionPool.getConnection();
-        } catch (InterruptedException e) {
+            connection = connectionPool.getInstance().getConnection();
+        } catch (InterruptedException | SQLException e) {
             e.printStackTrace();
         }
         try {
@@ -87,16 +87,16 @@ public class CustomerDoa extends UserDAO<Long, Customer> {
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            connectionPool.returnConnection(connection);
+            connectionPool.getInstance().returnConnection(connection);
         }
     }
 
     @Override
-    public void update(Customer customer) throws CrudException {
+    public void update(Customer customer) throws CrudException, SQLException {
         Connection connection = null;
         try {
-            connection = connectionPool.getConnection();
-        } catch (InterruptedException e) {
+            connection = connectionPool.getInstance().getConnection();
+        } catch (InterruptedException | SQLException e) {
             e.printStackTrace();
         }
         try {
@@ -112,16 +112,16 @@ public class CustomerDoa extends UserDAO<Long, Customer> {
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            connectionPool.returnConnection(connection);
+            connectionPool.getInstance().returnConnection(connection);
         }
     }
 
     @Override
-    public Customer readByEmail(String email) throws CrudException {
+    public Customer readByEmail(String email) throws CrudException, SQLException {
         Connection connection = null;
         try {
-            connection = connectionPool.getConnection();
-        } catch (InterruptedException e) {
+            connection = connectionPool.getInstance().getConnection();
+        } catch (InterruptedException | SQLException e) {
             e.printStackTrace();
         }
         try {
@@ -137,16 +137,16 @@ public class CustomerDoa extends UserDAO<Long, Customer> {
             throw new RuntimeException(e.getCause());
 
         } finally {
-            connectionPool.returnConnection(connection);
+            connectionPool.getInstance().returnConnection(connection);
         }
     }
 
     @Override
-    public boolean isExists(String email) throws CrudException {
+    public boolean isExists(String email) throws CrudException, SQLException {
         Connection connection = null;
         try {
-            connection = connectionPool.getConnection();
-        } catch (InterruptedException e) {
+            connection = connectionPool.getInstance().getConnection();
+        } catch (InterruptedException | SQLException e) {
             e.printStackTrace();
         }
         try {
@@ -154,28 +154,31 @@ public class CustomerDoa extends UserDAO<Long, Customer> {
             final PreparedStatement preparedStatement = connection.prepareStatement(sqlStatement);
             preparedStatement.setString(1, email);
             final ResultSet resultSet = preparedStatement.executeQuery();
-            int numberFromCount = resultSet.getInt(1);
-            if (numberFromCount == 0) {
-                return true;
+            if (resultSet.next()){
+                if (resultSet.getInt(1)==0){
+                    return false;
+                }
+                if (resultSet.wasNull()){
+                    return false;
+                }
             }
-            return false;
+            return true;
         } catch (SQLException e) {
             e.printStackTrace();
+            throw new RuntimeException("There was an issue with the query");
         }
         // return false in case of exception in the first try catch case.
-        try {
-            return false;
-        } finally {
-            connectionPool.returnConnection(connection);
+        finally {
+            connectionPool.getInstance().returnConnection(connection);
         }
     }
 
     @Override
-    public Customer read(Long id) throws CrudException {
+    public Customer read(Long id) throws CrudException, SQLException {
         Connection connection = null;
         try {
-            connection = connectionPool.getConnection();
-        } catch (InterruptedException e) {
+            connection = connectionPool.getInstance().getConnection();
+        } catch (InterruptedException | SQLException e) {
             e.printStackTrace();
         }
         try {
@@ -191,16 +194,16 @@ public class CustomerDoa extends UserDAO<Long, Customer> {
             e.printStackTrace();
             throw new RuntimeException();
         } finally {
-            connectionPool.returnConnection(connection);
+            connectionPool.getInstance().returnConnection(connection);
         }
     }
 
     //get all coupons related to the customer from customer_vs_coupons table
-    public void getAllCoupons(Customer customer) {
+    public void getAllCoupons(Customer customer) throws SQLException {
         Connection connection = null;
         try {
-            connection = connectionPool.getConnection();
-        } catch (InterruptedException e) {
+            connection = connectionPool.getInstance().getConnection();
+        } catch (InterruptedException | SQLException e) {
             e.printStackTrace();
         }
         try {
@@ -208,7 +211,7 @@ public class CustomerDoa extends UserDAO<Long, Customer> {
             final PreparedStatement preparedStatement = connection.prepareStatement(sqlStatement);
             preparedStatement.setLong(1, customer.getId());
             final ResultSet resultSet = preparedStatement.executeQuery();
-            ArrayList<Coupon> coupons = null;
+            ArrayList<Coupon> coupons = new ArrayList<Coupon>();
             while (resultSet.next()) {
                 coupons.add(ObjectExtractor.couponFromResultSet(resultSet));
             }
@@ -216,7 +219,7 @@ public class CustomerDoa extends UserDAO<Long, Customer> {
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            connectionPool.returnConnection(connection);
+            connectionPool.getInstance().returnConnection(connection);
         }
     }
 

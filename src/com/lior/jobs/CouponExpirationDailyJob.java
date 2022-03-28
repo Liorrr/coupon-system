@@ -5,6 +5,7 @@ import com.lior.exceptions.CrudException;
 import com.lior.model.Coupon;
 import lombok.RequiredArgsConstructor;
 
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
@@ -27,7 +28,7 @@ public class CouponExpirationDailyJob implements Runnable {
                 for (Coupon coupon: coupons){
                     System.out.println("Checking coupon id: "+coupon.getId());
                     //if expiration time is after now then delete
-                    if (coupon.getEndDate().isAfter(LocalDate.now())){
+                    if (coupon.getEndDate().toLocalDate().isAfter(LocalDate.now())){
                         System.out.println("Deleting coupon id: "+coupon.getId());
                         couponDao.deleteAllPurchasesByCoupon(coupon.getId());
                         System.out.println("Deleted purchase history for coupon id: "+coupon.getId());
@@ -37,7 +38,7 @@ public class CouponExpirationDailyJob implements Runnable {
                 }
                 Thread.sleep(SLEEP);
             }
-        } catch (CrudException | InterruptedException e) {
+        } catch (CrudException | InterruptedException | SQLException e) {
             e.printStackTrace();
         }
     }

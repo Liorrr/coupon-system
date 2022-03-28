@@ -21,23 +21,23 @@ public class CouponDao implements CrudDao<Long, Coupon> {
     public Long create(final Coupon coupon) throws CrudException, SQLException {
         Connection connection = null;
         try {
-            connection = connectionPool.getConnection();
+            connection = connectionPool.getInstance().getConnection();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
         try {
-            final String sqlStatement = "INSERT INTO `coupon_system`.`coupons`(`company_id`,`category_id`,`title`,`description`,`start_date`,`end_date`,`amount`,`price`,`image`) VALUES(?,?,?,?,?,?,?,?,?,?)";
+            final String sqlStatement = "INSERT INTO `coupon_system`.`coupons`(`company_id`,`category_id`,`title`,`description`,`start_date`,`end_date`,`amount`,`price`,`image`) VALUES(?,?,?,?,?,?,?,?,?)";
             final PreparedStatement preparedStatement = connection.prepareStatement(sqlStatement, Statement.RETURN_GENERATED_KEYS);
             preparedStatement.setInt(1, coupon.getCompanyID());
             preparedStatement.setInt(2, coupon.getCategoryID());
             preparedStatement.setString(3, coupon.getTitle());
             preparedStatement.setString(4, coupon.getDescription());
-            preparedStatement.setDate(5, coupon.getDateStartDate());
-            preparedStatement.setDate(6, coupon.getDateEndDate());
+            preparedStatement.setDate(5, coupon.getStartDate());
+            preparedStatement.setDate(6, coupon.getEndDate());
             preparedStatement.setInt(7, coupon.getAmount());
             preparedStatement.setDouble(8, coupon.getPrice());
             preparedStatement.setString(9, coupon.getImage());
-            preparedStatement.executeUpdate();
+            preparedStatement.execute();
             final ResultSet resultSet = preparedStatement.getGeneratedKeys();
 
             if (!resultSet.next()) {
@@ -50,7 +50,7 @@ public class CouponDao implements CrudDao<Long, Coupon> {
             //example: (EntityType.COMPANY, CrudOp.CREATE)
             throw new RuntimeException("There was an issue with the query");
         } finally {
-            connectionPool.returnConnection(connection);
+            connectionPool.getInstance().returnConnection(connection);
         }
     }
 
@@ -58,7 +58,7 @@ public class CouponDao implements CrudDao<Long, Coupon> {
     public Coupon read(final Long id) throws CrudException, SQLException {
         Connection connection = null;
         try {
-            connection = connectionPool.getConnection();
+            connection = connectionPool.getInstance().getConnection();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -74,17 +74,17 @@ public class CouponDao implements CrudDao<Long, Coupon> {
         } catch (SQLException e) {
             throw new SQLException(e);
         } finally {
-            connectionPool.returnConnection(connection);
+            connectionPool.getInstance().returnConnection(connection);
         }
     }
 
     @Override
-    public ArrayList<Coupon> readAll() throws CrudException {
+    public ArrayList<Coupon> readAll() throws CrudException, SQLException {
         Connection connection = null;
-        final ArrayList<Coupon> coupons = null;
+        final ArrayList<Coupon> coupons = new ArrayList<Coupon>();
         try {
-            connection = connectionPool.getConnection();
-        } catch (InterruptedException e) {
+            connection = connectionPool.getInstance().getConnection();
+        } catch (InterruptedException | SQLException e) {
             e.printStackTrace();
         }
         try {
@@ -103,16 +103,16 @@ public class CouponDao implements CrudDao<Long, Coupon> {
         try {
             return coupons;
         } finally {
-            connectionPool.returnConnection(connection);
+            connectionPool.getInstance().returnConnection(connection);
         }
     }
 
     @Override
-    public void delete(final Long id) throws CrudException {
+    public void delete(final Long id) throws CrudException, SQLException {
         Connection connection = null;
         try {
-            connection = connectionPool.getConnection();
-        } catch (InterruptedException e) {
+            connection = connectionPool.getInstance().getConnection();
+        } catch (InterruptedException | SQLException e) {
             e.printStackTrace();
         }
         try {
@@ -123,17 +123,17 @@ public class CouponDao implements CrudDao<Long, Coupon> {
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            connectionPool.returnConnection(connection);
+            connectionPool.getInstance().returnConnection(connection);
         }
     }
 
 
     @Override
-    public void update(Coupon coupon) throws CrudException {
+    public void update(Coupon coupon) throws CrudException, SQLException {
         Connection connection = null;
         try {
-            connection = connectionPool.getConnection();
-        } catch (InterruptedException e) {
+            connection = connectionPool.getInstance().getConnection();
+        } catch (InterruptedException | SQLException e) {
             e.printStackTrace();
         }
         try {
@@ -142,8 +142,8 @@ public class CouponDao implements CrudDao<Long, Coupon> {
             preparedStatement.setInt(1, coupon.getCategoryID());
             preparedStatement.setString(2, coupon.getTitle());
             preparedStatement.setString(3, coupon.getDescription());
-            preparedStatement.setDate(4, coupon.getDateStartDate());
-            preparedStatement.setDate(5, coupon.getDateEndDate());
+            preparedStatement.setDate(4, coupon.getStartDate());
+            preparedStatement.setDate(5, coupon.getEndDate());
             preparedStatement.setInt(6, coupon.getAmount());
             preparedStatement.setDouble(7, coupon.getPrice());
             preparedStatement.setString(8, coupon.getImage());
@@ -153,17 +153,17 @@ public class CouponDao implements CrudDao<Long, Coupon> {
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            connectionPool.returnConnection(connection);
+            connectionPool.getInstance().returnConnection(connection);
         }
     }
 
     // read all coupons by company id
-    public ArrayList<Coupon> readAllFromCompany(final long id) throws CrudException {
+    public ArrayList<Coupon> readAllFromCompany(final long id) throws CrudException, SQLException {
         Connection connection = null;
-        ArrayList<Coupon> coupons = null;
+        ArrayList<Coupon> coupons = new ArrayList<Coupon>();
         try {
-            connection = connectionPool.getConnection();
-        } catch (InterruptedException e) {
+            connection = connectionPool.getInstance().getConnection();
+        } catch (InterruptedException | SQLException e) {
             e.printStackTrace();
         }
         try {
@@ -183,16 +183,16 @@ public class CouponDao implements CrudDao<Long, Coupon> {
         try {
             return coupons;
         } finally {
-            connectionPool.returnConnection(connection);
+            connectionPool.getInstance().returnConnection(connection);
         }
     }
 
-    public ArrayList<Coupon> readFromCompanyByCategory(final long companyId, final long categoryId) throws CrudException {
+    public ArrayList<Coupon> readFromCompanyByCategory(final long companyId, final long categoryId) throws CrudException, SQLException {
         Connection connection = null;
-        ArrayList<Coupon> coupons = null;
+        ArrayList<Coupon> coupons = new ArrayList<Coupon>();
         try {
-            connection = connectionPool.getConnection();
-        } catch (InterruptedException e) {
+            connection = connectionPool.getInstance().getConnection();
+        } catch (InterruptedException | SQLException e) {
             e.printStackTrace();
         }
         try {
@@ -213,21 +213,24 @@ public class CouponDao implements CrudDao<Long, Coupon> {
         try {
             return coupons;
         } finally {
-            connectionPool.returnConnection(connection);
+            connectionPool.getInstance().returnConnection(connection);
         }
     }
 
 
-    public ArrayList<Coupon> readAllFromCustomer(final long id) throws CrudException {
+    public ArrayList<Coupon> readAllFromCustomer(final long id) throws CrudException, SQLException {
         Connection connection = null;
-        ArrayList<Coupon> coupons = null;
+        ArrayList<Coupon> coupons = new ArrayList<Coupon>();
         try {
-            connection = connectionPool.getConnection();
-        } catch (InterruptedException e) {
+            connection = connectionPool.getInstance().getConnection();
+        } catch (InterruptedException | SQLException e) {
             e.printStackTrace();
         }
         try {
-            final String sqlStatement = "SELECT coupons.* FROM coupon_system.coupons, customers.id WHERE customers.id= customers_vs_coupons.customer_id AND customers_vs_coupons.customer_id = ?";
+            final String sqlStatement = "SELECT `coupons`.*\n" +
+                    "FROM `coupon_system`.`coupons`, `coupon_system`.`customers_vs_coupons`\n" +
+                    "WHERE  `coupon_system`.`coupons`.`id` = `coupon_system`.`customers_vs_coupons`.`coupon_id`\n" +
+                    "AND `coupon_system`.`customers_vs_coupons`.`customer_id`=  ?";
             final PreparedStatement preparedStatement = connection.prepareStatement(sqlStatement);
             preparedStatement.setLong(1, id);
             final ResultSet resultSet = preparedStatement.executeQuery();
@@ -243,17 +246,17 @@ public class CouponDao implements CrudDao<Long, Coupon> {
         try {
             return coupons;
         } finally {
-            connectionPool.returnConnection(connection);
+            connectionPool.getInstance().returnConnection(connection);
         }
     }
 
     //get coupon id and return list of clients id that purchased the coupon.
-    public ArrayList<Long> couponPurchaseHistory(long id) {
+    public ArrayList<Long> couponPurchaseHistory(long id) throws SQLException {
         Connection connection = null;
-        ArrayList<Long> clients = null;
+        ArrayList<Long> clients = new ArrayList<Long>();
         try {
-            connection = connectionPool.getConnection();
-        } catch (InterruptedException e) {
+            connection = connectionPool.getInstance().getConnection();
+        } catch (InterruptedException | SQLException e) {
             e.printStackTrace();
         }
         try {
@@ -272,16 +275,16 @@ public class CouponDao implements CrudDao<Long, Coupon> {
         try {
             return clients;
         } finally {
-            connectionPool.returnConnection(connection);
+            connectionPool.getInstance().returnConnection(connection);
         }
     }
 
-    public void deleteAllPurchasesByCompany(final long id) {
+    public void deleteAllPurchasesByCompany(final long id) throws SQLException {
         Connection connection = null;
         List<Coupon> coupons = null;
         try {
-            connection = connectionPool.getConnection();
-        } catch (InterruptedException e) {
+            connection = connectionPool.getInstance().getConnection();
+        } catch (InterruptedException | SQLException e) {
             e.printStackTrace();
         }
         try {
@@ -292,16 +295,16 @@ public class CouponDao implements CrudDao<Long, Coupon> {
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            connectionPool.returnConnection(connection);
+            connectionPool.getInstance().returnConnection(connection);
         }
     }
 
-    public void deleteAllPurchasesByCustomer(final long id) {
+    public void deleteAllPurchasesByCustomer(final long id) throws SQLException {
         Connection connection = null;
         List<Coupon> coupons = null;
         try {
-            connection = connectionPool.getConnection();
-        } catch (InterruptedException e) {
+            connection = connectionPool.getInstance().getConnection();
+        } catch (InterruptedException | SQLException e) {
             e.printStackTrace();
         }
         try {
@@ -312,17 +315,17 @@ public class CouponDao implements CrudDao<Long, Coupon> {
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            connectionPool.returnConnection(connection);
+            connectionPool.getInstance().returnConnection(connection);
         }
     }
 
 
-    public void deleteAllPurchasesByCoupon(final long id) {
+    public void deleteAllPurchasesByCoupon(final long id) throws SQLException {
         Connection connection = null;
         List<Coupon> coupons = null;
         try {
-            connection = connectionPool.getConnection();
-        } catch (InterruptedException e) {
+            connection = connectionPool.getInstance().getConnection();
+        } catch (InterruptedException | SQLException e) {
             e.printStackTrace();
         }
         try {
@@ -333,16 +336,16 @@ public class CouponDao implements CrudDao<Long, Coupon> {
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            connectionPool.returnConnection(connection);
+            connectionPool.getInstance().returnConnection(connection);
         }
     }
 
-    public void deleteAllCouponsByCompany(final long id) {
+    public void deleteAllCouponsByCompany(final long id) throws SQLException {
         Connection connection = null;
         List<Coupon> coupons = null;
         try {
-            connection = connectionPool.getConnection();
-        } catch (InterruptedException e) {
+            connection = connectionPool.getInstance().getConnection();
+        } catch (InterruptedException | SQLException e) {
             e.printStackTrace();
         }
         try {
@@ -353,71 +356,77 @@ public class CouponDao implements CrudDao<Long, Coupon> {
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            connectionPool.returnConnection(connection);
+            connectionPool.getInstance().returnConnection(connection);
         }
     }
 
-    public Boolean isExist(final long id, final String title) {
+    public Boolean isExist(final long id, final String title) throws SQLException {
         Connection connection = null;
         try {
-            connection = connectionPool.getConnection();
-        } catch (InterruptedException e) {
+            connection = connectionPool.getInstance().getConnection();
+        } catch (InterruptedException | SQLException e) {
             e.printStackTrace();
         }
         try {
-            final String sqlStatement = "SELECT COUNT(name) AS isExist FROM coupon_system.coupons WHERE company_id = ? AND title = ?";
+            final String sqlStatement = "SELECT COUNT(title) AS isExist FROM coupon_system.coupons WHERE company_id = ? AND title = ?";
             final PreparedStatement preparedStatement = connection.prepareStatement(sqlStatement);
             preparedStatement.setLong(1, id);
             preparedStatement.setString(2, title);
             final ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.getInt(1) == 0) {
-                return false;
-            } else {
-                return true;
+            if (resultSet.next()){
+                if (resultSet.getInt(1)==0){
+                    return false;
+                }
+                if (resultSet.wasNull()){
+                    return false;
+                }
             }
+            return true;
         } catch (SQLException e) {
             e.printStackTrace();
             throw new RuntimeException("There was an issue with the query");
         } finally {
-            connectionPool.returnConnection(connection);
+            connectionPool.getInstance().returnConnection(connection);
         }
     }
 
-    public ArrayList<Coupon> readFromCompanyMaxPrice(final long companyId, final double price) {
+
+    public ArrayList<Coupon> readFromCompanyMaxPrice(final long companyId, final double price) throws SQLException {
         Connection connection = null;
-        ArrayList<Coupon> coupons = null;
+        ArrayList<Coupon> coupons = new ArrayList<Coupon>();
         try {
-            connection = connectionPool.getConnection();
-        } catch (InterruptedException e) {
+            connection = connectionPool.getInstance().getConnection();
+        } catch (SQLException | InterruptedException e) {
             e.printStackTrace();
         }
         try {
-            final String sqlStatement = "SELECT coupons.* FROM coupon_system.coupons WHERE company_id = ? AND price >= ?";
+            final String sqlStatement = "SELECT coupons.* FROM coupon_system.coupons WHERE company_id = ? AND price <=?";
             final PreparedStatement preparedStatement = connection.prepareStatement(sqlStatement);
             preparedStatement.setLong(1, companyId);
             preparedStatement.setDouble(2, price);
             final ResultSet resultSet = preparedStatement.executeQuery();
             if (!resultSet.next()) {
-                return null;
+                return coupons;
             }
             while (resultSet.next()) {
                 coupons.add(ObjectExtractor.couponFromResultSet(resultSet));
             }
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
         try {
             return coupons;
         } finally {
-            connectionPool.returnConnection(connection);
+            connectionPool.getInstance().returnConnection(connection);
         }
     }
 
-    public void addPurchase(final long customerId, final long couponId) {
+    public void addPurchase(final long customerId, final long couponId) throws SQLException {
         Connection connection = null;
         try {
-            connection = connectionPool.getConnection();
-        } catch (InterruptedException e) {
+            connection = connectionPool.getInstance().getConnection();
+        } catch (InterruptedException | SQLException e) {
             e.printStackTrace();
         }
         try {
@@ -429,18 +438,18 @@ public class CouponDao implements CrudDao<Long, Coupon> {
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            connectionPool.returnConnection(connection);
+            connectionPool.getInstance().returnConnection(connection);
         }
 
     }
 
 
-    public ArrayList<Coupon> readCustomerCouponsByMaxPrice(final long customerId, final double maxPrice) throws CrudException {
+    public ArrayList<Coupon> readCustomerCouponsByMaxPrice(final long customerId, final double maxPrice) throws CrudException, SQLException {
         Connection connection = null;
-        ArrayList<Coupon> coupons = null;
+        ArrayList<Coupon> coupons = new ArrayList<Coupon>();
         try {
-            connection = connectionPool.getConnection();
-        } catch (InterruptedException e) {
+            connection = connectionPool.getInstance().getConnection();
+        } catch (InterruptedException | SQLException e) {
             e.printStackTrace();
         }
         try {
@@ -461,17 +470,17 @@ public class CouponDao implements CrudDao<Long, Coupon> {
         try {
             return coupons;
         } finally {
-            connectionPool.returnConnection(connection);
+            connectionPool.getInstance().returnConnection(connection);
         }
     }
 
 
-    public ArrayList<Coupon> readCustomerCouponsByCategory(final long customerId, final long categoryId) throws CrudException {
+    public ArrayList<Coupon> readCustomerCouponsByCategory(final long customerId, final long categoryId) throws CrudException, SQLException {
         Connection connection = null;
-        ArrayList<Coupon> coupons = null;
+        ArrayList<Coupon> coupons = new ArrayList<Coupon>();
         try {
-            connection = connectionPool.getConnection();
-        } catch (InterruptedException e) {
+            connection = connectionPool.getInstance().getConnection();
+        } catch (InterruptedException | SQLException e) {
             e.printStackTrace();
         }
         try {
@@ -492,7 +501,7 @@ public class CouponDao implements CrudDao<Long, Coupon> {
         try {
             return coupons;
         } finally {
-            connectionPool.returnConnection(connection);
+            connectionPool.getInstance().returnConnection(connection);
         }
     }
 

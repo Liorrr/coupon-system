@@ -1,25 +1,19 @@
 package com.lior.util.db;
 
-import com.lior.util.conf.DBconf;
-import com.lior.util.Logger;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.Calendar;
 import java.util.Stack;
 
-
 public class ConnectionPool {
-    //public static final String SQL_URL = "";
-    //public static final String SQL_USER = "root";
-    //public static final String SQL_PASS = "123456";
-    private static final int NUMBER_OF_CONNECTIONS = 5;
+    private static final String SQL_URL = "jdbc:mysql://localhost:3306/coupon_system?useSSL=false&serverTimezone=UTC";
+    private static final String SQL_USER = "root";
+    private static final String SQL_PASS = "123456";
+    private static final int NUMBER_OF_CONNECTIONS = 20;
     private static ConnectionPool instance = null;
     private final Stack<Connection> connections = new Stack<>();
 
-    private static final Logger logger = Logger.getLogger(String.valueOf(ConnectionPool.class));
-
-    private ConnectionPool() throws SQLException {
+    public ConnectionPool() throws SQLException {
         System.out.println("Created new connection pool");
         openAllConnections();
     }
@@ -35,9 +29,9 @@ public class ConnectionPool {
         return instance;
     }
 
-    private void openAllConnections() throws SQLException {
+    private void openAllConnections() throws SQLException  {
         for (int counter = 0; counter < NUMBER_OF_CONNECTIONS; counter++) {
-            final Connection connection = DriverManager.getConnection(DBconf.sqlUrl, DBconf.sqlUser, DBconf.sqlPass);
+            final Connection connection = DriverManager.getConnection(SQL_URL, SQL_USER, SQL_PASS);
             connections.push(connection);
         }
     }
@@ -51,31 +45,24 @@ public class ConnectionPool {
         }
     }
 
+    //Getting a specific connection from the stack for any desirable operation
     public Connection getConnection() throws InterruptedException {
         synchronized (connections) {
-            final long start = Calendar.getInstance().getTimeInMillis();
-            if (connections.isEmpty()) {
-                logger.debug(Thread.currentThread().getName() + " is waiting for an available connection");
-            }
             while (connections.isEmpty()) {
                 connections.wait();
             }
-            final long end = Calendar.getInstance().getTimeInMillis();
-            final long duration = end - start;
-            logger.debug(Thread.currentThread().getName() + " found available connection after " + duration + " ms");
             return connections.pop();
         }
     }
 
+    //Returning one of the connections back to the stack
     public void returnConnection(final Connection connection) {
         synchronized (connections) {
             if (connection == null) {
-                logger.warn("Attempt to return null connection terminated");
                 return;
             }
             connections.push(connection);
-            logger.debug(Thread.currentThread().getName() + " is returning it's connection, now there are " + connections.size());
-            connections.notifyAll();
+            connections.notify();
         }
     }
 }

@@ -22,25 +22,23 @@ public class ObjectExtractor {
     //Create a coupon object out of database result set
     public static Coupon couponFromResultSet(ResultSet result) throws SQLException {
         Coupon coupon = new Coupon();
-        coupon.setId(result.getLong("coupon_id"));
+        coupon.setId(result.getLong("id"));
         coupon.setTitle(result.getString("title"));
         coupon.setCompanyID(result.getInt("company_id"));
-        coupon.setDateStartDate(result.getDate("start_date"));
-        coupon.setDateEndDate(result.getDate("end_date"));
+        coupon.setStartDate(result.getDate("start_date"));
+        coupon.setEndDate(result.getDate("end_date"));
         coupon.setAmount(result.getInt("amount"));
         coupon.setDescription(result.getString("description"));
         coupon.setPrice(result.getFloat("price"));
         coupon.setImage(result.getString("image"));
-        // Translating the enum into a string in order to catch it
-        Category category = Category.valueOf(result.getString("category_id"));
-        coupon.setCategory(category);
+        coupon.setCategoryID(result.getInt("category_id"));
         return coupon;
     }
 
     //Create a coupon object out of database result set
     public static Customer customerFromResultSet(ResultSet result) throws SQLException {
         Customer customer = new Customer();
-        customer.setId(result.getLong("customer_id"));
+        customer.setId(result.getLong("id"));
         customer.setFirstName(result.getString("first_name"));
         customer.setLastName(result.getString("last_name"));
         customer.setEmail(result.getString("email"));

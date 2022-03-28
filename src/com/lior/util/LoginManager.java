@@ -10,25 +10,27 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.sql.SQLException;
+
 //login switch case function that return one of the following objects: adminFacade, companyFacade, customerFacade or null in case of failure.
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class LoginManager {
-    private static LoginManager instance = new LoginManager();
+    public static final LoginManager instance = new LoginManager();
 
-    public Object login(final String email, final  String password, ClientType  clientType) throws LoginException, CrudException {
+    public Object login(final String email, final  String password, ClientType  clientType) throws LoginException, CrudException, SQLException {
         switch  (clientType)  {
             case  ADMIN:
-                AdminFacade adminFacade =  new AdminFacade();
+                AdminFacade adminFacade = AdminFacade.instance;
                 if (adminFacade.login(email,password,clientType)){
                     return adminFacade;
             }
             case COMPANY:
-                CompanyFacade companyFacade = new CompanyFacade();
+                CompanyFacade companyFacade = CompanyFacade.instance;
                 if (companyFacade.login(email,password,clientType)){
                     return companyFacade;
                 }
             case CUSTOMER:
-                CustomerFacade customerFacade = new CustomerFacade();
+                CustomerFacade customerFacade = CustomerFacade.instance;
                 if (customerFacade.login(email, password, clientType)){
                     return customerFacade;
                 }
