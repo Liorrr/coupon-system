@@ -17,7 +17,7 @@ public class CompanyDao extends UserDAO<Long, Company> {
     public static final CompanyDao instance = new CompanyDao();
     private ConnectionPool connectionPool = null;
 
-
+    //get company entity by email
     @Override
     public Company readByEmail(String email) throws CrudException, SQLException {
         Connection connection = null;
@@ -76,9 +76,9 @@ public class CompanyDao extends UserDAO<Long, Company> {
 
 
     /*
- is company existing by email return true\false, query counting number of companies with the same email,
- in case email exist returned number will be 1 since email is unique → return true  , if it's 0 → return true.
-*/
+     * is company existing by email return true\false, query counting number of companies with the same email,
+     * in case email exist returned number will be 1 since email is unique → return true  , if it's 0 → return true.
+     */
 
     public boolean isCompanyNameExists(String companyName) throws CrudException, SQLException {
         Connection connection = null;
@@ -110,6 +110,7 @@ public class CompanyDao extends UserDAO<Long, Company> {
         }
     }
 
+    //creating company in db and returning company id from DB to populate in company entity.
     @Override
     public Long create(final Company company) throws SQLException {
         Connection connection = null;
@@ -212,6 +213,7 @@ public class CompanyDao extends UserDAO<Long, Company> {
         }
     }
 
+    //update company will allow the admin to only change password to an existing company, protected by both companyDoa and updatecompany function's constructor in adminfacade
     @Override
     public void update(Company company) throws CrudException, SQLException {
         Connection connection = null;

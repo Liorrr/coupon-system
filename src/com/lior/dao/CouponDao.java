@@ -16,7 +16,7 @@ public class CouponDao implements CrudDao<Long, Coupon> {
     public static final CouponDao instance = new CouponDao();
     private ConnectionPool connectionPool = null;
 
-
+    //create a coupon.. I got nothing to add to it. whop whop!
     @Override
     public Long create(final Coupon coupon) throws CrudException, SQLException {
         Connection connection = null;
@@ -127,7 +127,7 @@ public class CouponDao implements CrudDao<Long, Coupon> {
         }
     }
 
-
+    //
     @Override
     public void update(Coupon coupon) throws CrudException, SQLException {
         Connection connection = null;

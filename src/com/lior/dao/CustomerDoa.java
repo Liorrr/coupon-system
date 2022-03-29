@@ -198,31 +198,6 @@ public class CustomerDoa extends UserDAO<Long, Customer> {
         }
     }
 
-    //get all coupons related to the customer from customer_vs_coupons table
-    public void getAllCoupons(Customer customer) throws SQLException {
-        Connection connection = null;
-        try {
-            connection = connectionPool.getInstance().getConnection();
-        } catch (InterruptedException | SQLException e) {
-            e.printStackTrace();
-        }
-        try {
-            final String sqlStatement = "SELECT coupons.* FROM coupons, customers_vs_coupons WHERE coupons.id = customers_vs_coupons.coupon_id AND customers_vs_coupons.customer_id = ?;";
-            final PreparedStatement preparedStatement = connection.prepareStatement(sqlStatement);
-            preparedStatement.setLong(1, customer.getId());
-            final ResultSet resultSet = preparedStatement.executeQuery();
-            ArrayList<Coupon> coupons = new ArrayList<Coupon>();
-            while (resultSet.next()) {
-                coupons.add(ObjectExtractor.couponFromResultSet(resultSet));
-            }
-            customer.setCoupons(coupons);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            connectionPool.getInstance().returnConnection(connection);
-        }
-    }
-
 
 
 }
